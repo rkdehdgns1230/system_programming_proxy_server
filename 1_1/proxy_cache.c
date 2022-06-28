@@ -60,6 +60,10 @@ int main(){
 	printf("Input URL >> ");
 	/* get the url from standard input */	
 	while(scanf("%s", input_url)){
+		// if input url is bye -> break the loop
+		if(strcmp(input_url, "bye") == 0)
+			break;
+
 		char *hashed_url = (char*)malloc(sizeof(char) * 100);
 		hashed_url = sha1_hash(input_url, hashed_url);
 		
@@ -73,12 +77,11 @@ int main(){
 		char dirName[4];
 		strncpy(dirName, hashed_url, 3);
 		strcat(dirPath, dirName);
-		printf("%s\n", dirPath);
 		/* set umask 000 */
 		umask(000);
 		/* make new directory with hashed url */
 		mkdir(dirPath, 0777);
-		printf("%s\n", dirPath);
+		//printf("%s\n", dirPath);
 		/////////// end of making directory ///////////
 		
 		/////////// start of making file ///////////
@@ -93,7 +96,7 @@ int main(){
 		}
 		
 		strcat(filePath, tmp);
-		printf("%s\n", filePath);
+		//printf("%s\n", filePath);
 		creat(filePath, 0644);
 		/////////// end of making file /////////////
 
