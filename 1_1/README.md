@@ -21,3 +21,15 @@ sudo apt-get install libssl-dev
 compile하는 경우 -lcrpyto option 추가해야한다.
 
 ## Result Screen
+![3](https://user-images.githubusercontent.com/68600592/176146879-e3f62ba0-821a-4c63-af3a-4a904dc4f596.jpg)
+<br>
+Hashing result with SHA1
+| input url | hashed url |
+| -------------- | ----------------------------------------- |
+| www.naver.com  | fed/818da7395e30442b1dcf45c9b6669d1c0ff6b |
+| www.google.com | d8b/99f68b208b5453b391cb0c6c3d6a9824f3c3a |
+| www.kw.ac.kr   | e00/0f293fe62e97369e4b716bb3e78fababf8f90 |
+
+Result Cache directory screen<br>
+![2](https://user-images.githubusercontent.com/68600592/176144327-b4644d07-88ce-4cc2-ba72-dcae8a4440b6.jpg)<br>
+
