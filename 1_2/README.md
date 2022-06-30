@@ -55,5 +55,8 @@ MISS일 경우:
 [MISS]URL-[Time information]  
 ```
 **프로그램 실행 화면**  
-
+![4](https://user-images.githubusercontent.com/68600592/176591016-6137ce89-16d5-41da-b9ed-09c66663dcc4.jpg)  
+  
 **logfile.txt 확인 결과**  
+![5](https://user-images.githubusercontent.com/68600592/176591059-901a2080-5886-404f-a8da-08ce867d4b36.jpg)  
+  
