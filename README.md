@@ -1,6 +1,22 @@
-# system_programming_proxy_server
-proxy server 
+# System Programming Proxy Server
+**Proxy Server**  
   
+![image](https://user-images.githubusercontent.com/68600592/176699146-0962539e-6aab-47a3-9696-469b9eb2fe67.png)  
+Proxy Server Diagram  
+  
+프록시 서버 (proxy server)는 클라이언트가 자신을 통해 다른 네트워크 서비스에 간접적으로 접속할 수 있게 해주는 컴퓨터 시스템이나 응용 프로그램을 의미한다.  
+
+서버 (server)와 클라이언트 (client) 사이에 중계기로서 대리로 통신을 수행하는 것을 가리켜 '프록시'라고 하며, 중계 기능을 하는 것을 '프록시 서버'라고 한다.  
+
+프록시 서버 중 일부는 프록시 서버에 요청된 내용을 캐시에 저장하여 이후에 중복된 요청에 대해서는 빠르게 처리할 수 있도록 
+저장하고, 같은 요청을 다시 하는 경우 Proxy내의 cache에 저장되어 있는 자료들을 제공함으로써 자료를 빠르게 전송할 수 있다.
+  
+Client는 Proxy를 사용해 자료를 받아오겠다는 사실을 host 컴퓨터에게 알려야 Proxy server를 통해 자료를 받아오는 것이 가능하다.
+전송 속도가 빠를 수 있지만, proxy server에 caching된 자료가 아닌 경우 전송이 더 오래 걸릴수도 있다.
+
+이번 프로젝트는 사용자가 페이지를 요청했을 때, 해당 페이지가 proxy server의 cache에 저장되어 있는지를 검사하고, 저장되어 있는 경우 (HIT) 페이지가 아직 유효한지 검사해서 사용자에게 전달하고, 그렇지 않은 경우 (MISS) 웹 서버에 새로운 페이지를 요청해 로드하는 방식으로 작동하는 proxy server를 구현했습니다.
+
+----------------
 1-1:  
 1-2:  
 1-3:  
