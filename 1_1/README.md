@@ -20,7 +20,7 @@ directory를 만드는 system call
 sudo apt-get install libssl-dev
 compile하는 경우 -lcrpyto option 추가해야한다.
 
-## Result Screend
+## Result Screen
 proxy_cache program 실행 예시  
 ![3](https://user-images.githubusercontent.com/68600592/176146879-e3f62ba0-821a-4c63-af3a-4a904dc4f596.jpg)  
 <br>
