@@ -74,7 +74,8 @@ int main(){
 	strcat(logPath, "/logfile.txt");
 	FILE *fp = fopen(logPath, "a");
 	
-	fprintf(fp, "[START] program start");
+	fprintf(fp, "===================================================================\n");
+	fprintf(fp, "[START] program start\n");
 	
 	/* start the entire program timer */
 	time_t start;
@@ -176,6 +177,7 @@ int main(){
 	time(&end);
 
 	fprintf(fp, "[Terminated] PROGRAM RUN TIME: %d sec. #request hit: %d, miss: %d\n", (int)(end-start), hit_num, miss_num);
+	fprintf(fp, "===================================================================\n");
 	/* close the file stream */
 	fclose(fp);
 		
