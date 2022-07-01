@@ -13,10 +13,16 @@ proxy server가 사용자의 요청을 받는 작업과 caching 여부를 판단
 **Sub process (child process)**  
 사용자의 URL을 입력 받고 지난 1_2에서 구현한 부분의 작업을 수행한다.
   
+  1. "[pid]Input URL >> " string을 출력하고, 사용자의 url입력을 대기
+  2. url이 입력되는 경우 1_2 구현 내용을 수행
+  3. "bye"가 입력되는 경우 child process를 종료한다.
 
-
-## 구현 순서
+## 구현 내용
   
+  1. 기존의 기능을 child process에서 수행하도록 코드 변경
+  2. input command를 입력 받도록 구현
+  3. process id를 logfile에 출력할 수 있도록 구현
+  4. logfile.txt 작성 내용 부분 구현 수정
 
 ## 사용된 기술
 
@@ -26,7 +32,24 @@ proxy server가 사용자의 요청을 받는 작업과 caching 여부를 판단
 
 pid_t getpid(void); // return the current process's process id
 pid_t fork(void);   // return 0: child process, processID of child process: parent process, -1: error
+pid_t wait(int *statloc); // return process id if ok, -1 an error
 ```
-
+  
+현재 process의 process id를 return하는 함수
+```c
+pid_t getpid(void);
+```
+  
+child process를 만들기 위해 사용하는 함수  
+2개의 return이 발생하는데, 0을 반환하는 경우 chlid process에 대한 반환값이고, process id를 반환하는 경우 parent process에 대한 반환값이다.
+```c
+pid_t fork(void);
+```
+  
+child process의 종료를 대기하기 위해 사용하는 함수  
+```c
+pid_t wait(int *statloc);
+```
+  
 ## 결과 화면
   
