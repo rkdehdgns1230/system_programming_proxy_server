@@ -53,3 +53,9 @@ pid_t wait(int *statloc);
   
 ## 결과 화면
   
+![image](https://user-images.githubusercontent.com/68600592/177031561-bb448508-5569-499c-be3b-2ca96080dd62.png)  
+위의 순서대로 terminal에서 프로그램을 실행한 결과 다음과 같이 logfile.txt 파일에 로그가 기록되는 결과를 확인할 수 있습니다.  
+  
+![image](https://user-images.githubusercontent.com/68600592/177031339-8783fccc-bff4-45d9-802a-f03508fb8bfc.png)  
+  
+프로그램 최초 실행시 Start message가 로그 파일에 출력되고, 프로그램 종료시 Server terminate message가 위와 같이 출력됩니다.
