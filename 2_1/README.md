@@ -14,7 +14,7 @@ TCP에 따른 server, client의 통신 과정은 다음과 같습니다.
 3. **struct sockaddr_in** (socket 주소 정보를 담는 구조체)  
 socket 주소에 대한 정보를 저장하는 구조체로 다음과 같은 members를 갖고 있습니다.  
 ```c
-struct sockadd_in{
+struct sockaddr_in{
   short sin_family;
   u_short sin_port;
   struct in_addr sin_addr;
