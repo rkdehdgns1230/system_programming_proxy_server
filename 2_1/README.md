@@ -15,10 +15,10 @@ TCP에 따른 server, client의 통신 과정은 다음과 같습니다.
 socket 주소에 대한 정보를 저장하는 구조체로 다음과 같은 members를 갖고 있습니다.  
 ```c
 struct sockaddr_in{
-  short sin_family;
-  u_short sin_port;
-  struct in_addr sin_addr;
-  char sin_zero[8];
+  short sin_family;         // 주소체계 AF_INET 고정
+  u_short sin_port;         // 16bits 포트 번호, network byte order
+  struct in_addr sin_addr;  // 32bits ip address
+  char sin_zero[8];         // 전체 크기를 16byte로 맞추기 위한 dummy
 }
 ```
   
