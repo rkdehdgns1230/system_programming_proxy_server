@@ -79,6 +79,8 @@ int main(){
 	char input_url[URLSIZE];
 	int hit_num = 0, miss_num = 0;
 	int subProcessNum = 0;
+
+	int i, j;
 	
 	/* variables for saving socket information */
 	int socket_fd, client_fd;
@@ -182,7 +184,12 @@ int main(){
 				int urlLen = strlen(input_url);
 				// \n -> \0, change last word
 				input_url[urlLen - 1] = '\0';
-				printf("%s\n", input_url);
+				printf("%s : %d\n", input_url, urlLen);
+				
+				for(i = 0; i < urlLen; i++){
+					printf("%d: %c\n", i, input_url[i]);
+				}				
+
 				/* get current time information with localtime systemcall */
 				time_t now;
 				time(&now);
@@ -202,6 +209,7 @@ int main(){
 				strcat(dirPath, "/");
 				char dirName[4];
 				strncpy(dirName, hashed_url, 3);
+				dirName[3] = '\0';
 				strcat(dirPath, dirName);
 				//printf("%s\n", dirPath);
 				/////////// end of making directory name ///////////
@@ -223,9 +231,10 @@ int main(){
 				strcat(filePath, "/");
 
 				char tmp[40];
-				for(int i = 3; i < strlen(hashed_url); i++){
+				for(i = 3; i < strlen(hashed_url); i++){
 					tmp[i-3] = hashed_url[i];
 				}
+				tmp[i-3] = '\0';
 				
 				strcat(filePath, tmp);		
 				/////////// end point of making file name ////////////
@@ -238,10 +247,10 @@ int main(){
 				if(judge){
 					fprintf(fp, "[HIT] ServerPID: %d | %s/%s - [%d/%02d/%02d, %02d:%02d:%02d]\n", getpid(), dirName, tmp, 1900+ltp->tm_year, 1+ltp->tm_mon, ltp->tm_mday, ltp->tm_hour, ltp->tm_min, ltp->tm_sec);
 					fflush(fp);
-					fprintf(fp, "[HIT]%s\n", input_url);
+					fprintf(fp, "[HIT] %s\n", input_url);
 					fflush(fp);
-					printf("[HIT]%s/%s - [%d/%02d/%02d, %02d:%02d:%02d]\n", dirName, tmp, 1900+ltp->tm_year, 1+ltp->tm_mon, ltp->tm_mday, ltp->tm_hour, ltp->tm_min, ltp->tm_sec);
-					printf("[HIT]%s\n", input_url);
+					printf("[HIT] ServerPID: %d | %s/%s - [%d/%02d/%02d, %02d:%02d:%02d]\n", getpid(), dirName, tmp, 1900+ltp->tm_year, 1+ltp->tm_mon, ltp->tm_mday, ltp->tm_hour, ltp->tm_min, ltp->tm_sec);
+					printf("[HIT] %s\n", input_url);
 					hit_num++;
 				}
 				// miss
@@ -278,9 +287,9 @@ int main(){
 			/* end of the child process */
 			exit(0);			
 		}
-		if(wait(&status) != pid){
-			printf("wait error!\n");
-		}
+		/* close the client socket */
+		close(client_fd);
+		/* close the client socket */
 		subProcessNum++;
 	}
 	/* start the entire program timer */
@@ -293,6 +302,9 @@ int main(){
 	/* close the file stream */
 	fclose(fp);
 	/* close the file stream */
-		
+
+	/* close the socket */
+	close(socket_fd);
+	/* close the socket */
 	return 0;
 }

@@ -39,6 +39,9 @@ int main(){
 	write(STDOUT_FILENO, "> ", 2);
 	// read from standard input and write it to the socket and standard output
 	while((len = read(STDIN_FILENO, buf, sizeof(buf))) > 0){
+		if(!strncmp(buf, "bye", 3)){
+			break;
+		}
 		// file des, buf, nbytes
 		if(write(socket_fd, buf, strlen(buf)) > 0){
 			// send message to server.
@@ -46,6 +49,7 @@ int main(){
 			write(STDOUT_FILENO, buf, len);
 			bzero(buf, sizeof(buf));
 		}
+		
 		// file des, buf, nbytes
 		write(STDOUT_FILENO, "> ", 2);
 	}
