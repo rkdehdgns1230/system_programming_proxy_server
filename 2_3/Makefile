@@ -1,2 +1,2 @@
-proxy_server: proxy_server.c
-	gcc -o proxy_server proxy_server.c -lcrypto
+proxy_server: proxy_cache.c
+	gcc -o proxy_cache proxy_cache.c -lcrypto
