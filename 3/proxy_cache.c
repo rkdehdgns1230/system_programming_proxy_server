@@ -177,6 +177,7 @@ char *getHomeDir(char *home){
 static void handler(){
 	pid_t pid;
 	int status;
+	sub_process_num++;
 	while((pid = waitpid(-1, &status, WNOHANG)) > 0);
 }
 
@@ -298,9 +299,16 @@ void* printHitMessage(void* arg){
 	// type casting to struct hit_arg
 	struct hit_arg* args = (struct hit_arg *)arg;
 
+	time_t now;
+	time(&now);
+	struct tm *ltp;
+	ltp = localtime(&now);
+
 	// print hit messages to logfile
 	fprintf(logfile_fp, "[HIT]%s/%s\n", args->dir_name, args->new_file_name);
-	fprintf(logfile_fp, "[HIT]%s\n", args->input_url);
+	fprintf(logfile_fp, "[HIT]%s-[%d/%02d/%02d, %02d:%02d:%02d]\n", 
+	args->input_url, 1900 + ltp->tm_year, ltp->tm_mon + 1, ltp->tm_mday, ltp->tm_hour, ltp->tm_min, ltp->tm_sec
+	);
 	fflush(logfile_fp);
 
 	return;
