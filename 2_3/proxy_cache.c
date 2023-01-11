@@ -33,9 +33,9 @@
 #define BUFSIZE 40960
 #define PORTNO 39999
 
-FILE* fp; // logfile's file pointer
+FILE* logfile_fp; // logfile's file pointer
 time_t server_start, server_end;
-int subProcessNum = 0; // the number of sub processes
+int sub_process_num = 0; // the number of sub processes
 pid_t ppid; // parent process id
 
 // get hashed url
@@ -52,16 +52,16 @@ static void sigAlrm(int);
 // change host name to dotted decimal
 char* getIPAddr(char*);
 //////////////////////////////////////////////////////////////////////////
-// sha1_hash								//
+// sha1_hash															//
 // =====================================================================//
 // Input: char* -> input_url                                            //
-//        char* -> hashed_url		                                //
-// Input parameter Description : get input url and hashed url		//
-//                            			                        //
-// Output: char* -> hashed_url						//
+//        char* -> hashed_url		                                	//
+// Input parameter Description : get input url and hashed url			//
+//                            			                        		//
+// Output: char* -> hashed_url											//
 // Output parameter Description : return hashed url mapped by SHA1 func //
-//  									//
-// Purpose : mapping url to hash value			                //
+//  																	//
+// Purpose : mapping url to hash value			              			//
 //////////////////////////////////////////////////////////////////////////
 char *sha1_hash(char *input_url, char *hashed_url){
 	unsigned char hashed_160bits[20];
@@ -82,15 +82,15 @@ char *sha1_hash(char *input_url, char *hashed_url){
 	return hashed_url;
 }
 //////////////////////////////////////////////////////////////////////////
-// getHomeDir								//
+// getHomeDir															//
 // =====================================================================//
-// Input: char* -> home		                                        //
-//        				                                //
+// Input: char* -> home		                                      		//
+//        				                                				//
 // Input parameter Description : get the storage of path to the home dir//
-//                            			                        //
-// Output: char* -> home						//
-// Output parameter Description : return home path of current user	//
-//  									//
+//                            			                        		//
+// Output: char* -> home												//
+// Output parameter Description : return home path of current user		//
+//  																	//
 // Purpose : get the home dir's path with this function	                //
 //////////////////////////////////////////////////////////////////////////
 char *getHomeDir(char *home){
@@ -102,16 +102,16 @@ char *getHomeDir(char *home){
 }
 
 //////////////////////////////////////////////////////////////////////////
-// handler								//
+// handler																//
 // =====================================================================//
-// Input: void			                                        //
-//        				                                //
-//                            			                        //
-// Output: static void 							//
-// Output parameter Description : return nothing			//
-//  									//
-// Purpose : when this function called wait for child process's 	//
-// 	     termination and receive termination status			//
+// Input: void			                                        		//
+//        				                                				//
+//                            			                        		//
+// Output: static void 													//
+// Output parameter Description : return nothing						//
+//  																	//
+// Purpose : when this function called wait for child process's 		//
+// 	     termination and receive termination status						//
 //////////////////////////////////////////////////////////////////////////
 static void handler(){
 	pid_t pid;
@@ -119,6 +119,17 @@ static void handler(){
 	while((pid = waitpid(-1, &status, WNOHANG)) > 0);
 }
 
+//////////////////////////////////////////////////////////////////////////
+// getIPAddr															//
+// =====================================================================//
+// Input: char * (domain name)                                     		//
+//        				                                				//
+//                            			                        		//
+// Output: char * 														//
+// Output parameter Description : return dotted decimal fo input address//
+//  																	//
+// Purpose : this function returns dotted decimal of input url string	//
+//////////////////////////////////////////////////////////////////////////
 char* getIPAddr(char* url) {
 	struct hostent* hent;
 	char* haddr;
@@ -135,37 +146,37 @@ char* getIPAddr(char* url) {
 }
 
 //////////////////////////////////////////////////////////////////////////
-// sigInt								//
+// sigInt																//
 // =====================================================================//
-// Input: int signo		                                        //
-//        				                                //
-//                            			                        //
-// Output: void 							//
-// Output parameter Description : return nothing			//
-//  									//
-// Purpose : this function is SIGINT's signal handler function 		//
-//	     executing when process create SIGINT signal		//
+// Input: int signo		                                        		//
+//        				                                				//
+//                            			                        		//
+// Output: void 														//
+// Output parameter Description : return nothing						//
+//  																	//
+// Purpose : this function is SIGINT's signal handler function 			//
+//	     executing when process create SIGINT signal					//
 //////////////////////////////////////////////////////////////////////////
 void sigInt(int signo) {
 	// current pid == ppid then terminate current process and print termination message
 	if (getpid() == ppid) {
 		time(&server_end);
-		fprintf(fp, "**SERVER** [Terminated] run time %d sec. #sub process: %d\n", (int)(server_end - server_start), subProcessNum);
+		fprintf(logfile_fp, "**SERVER** [Terminated] run time %d sec. #sub process: %d\n", (int)(server_end - server_start), sub_process_num);
 		exit(0);
 	}
 	return;
 }
 //////////////////////////////////////////////////////////////////////////
-// sigAlrm								//
+// sigAlrm																//
 // =====================================================================//
-// Input: int signo		                                        //
-//        				                                //
-//                            			                        //
-// Output: void 							//
-// Output parameter Description : return nothing			//
-//  									//
-// Purpose : this function is SIGALRM's signal handler function 	//
-//	     executing when process create SIGALRM signal		//
+// Input: int signo		                                        		//
+//        				                                				//
+//                            			                        		//
+// Output: void 														//
+// Output parameter Description : return nothing						//
+//  																	//
+// Purpose : this function is SIGALRM's signal handler function 		//
+//	     executing when process create SIGALRM signal					//
 //////////////////////////////////////////////////////////////////////////
 void sigAlrm(int signo) {
 	// print alarm msg
@@ -173,10 +184,38 @@ void sigAlrm(int signo) {
 	exit(0);
 }
 
+//////////////////////////////////////////////////////////////////////////
+// makeNewCacheFilePath													//
+// =====================================================================//
+// Input: char* dir_path, char* hashed_url                         		//
+//        				                                				//
+//                            			                        		//
+// Output: char* new_file_path											//
+//  																	//
+// Purpose : this function make new cache file path with directory path	//
+// and hashed url														//
+//////////////////////////////////////////////////////////////////////////
+char* makeNewCacheFilePath(char* dir_path, char* hashed_url){
+	char* new_file_path = malloc(sizeof(char) * 30);
+	strcpy(new_file_path, dir_path);
+	strcat(new_file_path, "/");
+
+	char tmp[40];
+	int hashed_url_length = strlen(hashed_url);
+	for(int i = 3; i < hashed_url_length; i++){
+		tmp[i-3] = hashed_url[i];
+	}
+	tmp[hashed_url_length - 3] = '\0';
+	
+	strcat(new_file_path, tmp);	
+
+	return new_file_path;
+}
+
 int main(){	
-	char cacheDirPath[20];
+	char cache_dir_path[60];
 	int hit_num = 0, miss_num = 0;
-	int subProcessNum = 0;
+	int sub_process_num = 0;
 	int opt = 1;
 	
 	int i, j;
@@ -196,26 +235,26 @@ int main(){
 	char *home = (char*)malloc(sizeof(char)*10);
 	home = getHomeDir(home);
 	
-	/* cacheDirPath = /your home dir/cache */
-	strcpy(cacheDirPath, home);
-	strcat(cacheDirPath, "/cache");
+	/* cache_dir_path = /your home dir/cache */
+	strcpy(cache_dir_path, home);
+	strcat(cache_dir_path, "/cache");
 	/* make cache directory */
 	umask(000);
-	mkdir(cacheDirPath, 0777);
+	mkdir(cache_dir_path, 0777);
 	//////////////////////////
 
 	/* make logfile directory and file */
-	char logPath[60];
-	strcpy(logPath, home);
-	strcat(logPath, "/logfile");
-	mkdir(logPath, 0777);
+	char log_file_path[60];
+	strcpy(log_file_path, home);
+	strcat(log_file_path, "/logfile");
+	mkdir(log_file_path, 0777);
 
-	strcat(logPath, "/logfile.txt");
-	fp = fopen(logPath, "a");
+	strcat(log_file_path, "/logfile.txt");
+	logfile_fp = fopen(log_file_path, "a");
 
 	if((socket_fd = socket(PF_INET, SOCK_STREAM, 0)) < 0){
 		printf("Server: Can't open the stream socket!\n");
-		return 0;			
+		return 0;
 	}
 	/* make logfile directory and file */
 
@@ -223,18 +262,20 @@ int main(){
 	// use setsockopt to avoid bind TIME_WAIT error
 	setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
 	
-	// fill the server socket's information
+	//////// fill the server socket's information ////////
 	bzero((char*)&server_addr, sizeof(server_addr));
 	server_addr.sin_family = AF_INET;
 	server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	server_addr.sin_port = htons(PORTNO);
-	// fill the server socket's information
+	//////// fill the server socket's information ////////
 	
+	//////// binding socket with port and ip address for server ////////
 	if(bind(socket_fd, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0){
 		printf("Server: Can't bind the local address with stream socket!\n");
 		close(socket_fd);
 		return 0;
 	}
+	//////// binding socket with port and ip address for server ////////
 
 	// wait until the requests are set.
 	listen(socket_fd, 5);
@@ -267,7 +308,7 @@ int main(){
 		// IPv4 based network address, port number
 		printf("[%s : %d] client was connected.\n", inet_ntoa(inet_client_address), client_addr.sin_port);
 		
-		// make new process for handling new connection
+		// create new process for handling new connection
 		pid_t pid = fork();
 		int status;
 		
@@ -275,34 +316,36 @@ int main(){
 		if(pid < 0){
 			printf("fork error!\n");
 		}
-		// child process: proxy server start
+		// child process: send request to original server
 		else if(pid == 0){
-			char buf[BUFSIZE];
+			char request_body_buf[BUFSIZE];
 			char *IPAddr;
+			// for response http message
 			char response_header[BUFSIZE];
 			char response_message[BUFSIZE];
 
-			char tmpBuf[BUFSIZE];
+			char tmp_buf[BUFSIZE];
 			char method[20];
 			char input_domain[URLSIZE];
 			char *input_url;
 			char tmp_url[URLSIZE];	
 			char *tok = NULL;
+
 			// print address and port number of client
 			printf("[%s:%d] client was connected\n", inet_ntoa(inet_client_address), client_addr.sin_port);
 			// read request message from the client
-			read(client_fd, buf, URLSIZE);
-			strcpy(tmpBuf, buf);
+			read(client_fd, request_body_buf, URLSIZE);
+			strcpy(tmp_buf, request_body_buf);
 			
 			puts("=========================================");
 			printf("Request from [%s : %d]\n", inet_ntoa(inet_client_address), client_addr.sin_port);
-			puts(buf);
+			puts(request_body_buf);
 			puts("=========================================");
 			
-			tok = strtok(tmpBuf, " ");
+			tok = strtok(tmp_buf, " ");
 			strcpy(method, tok);
 			
-			// if method is "GET"
+			// if HTTP method is "GET"
 			if(strcmp(method, "GET") == 0){
 				char* tok2;
 
@@ -322,43 +365,48 @@ int main(){
 				// get IP address with input url
 			}				
 
-			/* get current time information with localtime systemcall */
+			/* get current time information with localtime system call */
 			time_t now;
 			time(&now);
 			struct tm *ltp;
 			ltp = localtime(&now);
-		
+
 			/* calculate hashed url with input url */
 			char *hashed_url = (char*)malloc(sizeof(char) * 100);
+			// use sha1_hash function for hashing
 			hashed_url = sha1_hash(input_url, hashed_url);
 	
 			//////////// start of making directory name ///////////
-			/* set directory path and name */
-			char dirPath[30];
-			strcpy(dirPath, cacheDirPath);
-			strcat(dirPath, "/");
-			char dirName[4];
-			strncpy(dirName, hashed_url, 3);
-			dirName[3] = '\0';
-			strcat(dirPath, dirName);
-			//printf("%s\n", dirPath);
+			char dir_path[60];
+
+			strcpy(dir_path, cache_dir_path);
+			strcat(dir_path, "/");
+
+			///////// set cache directory name with hashed url /////////
+			char dir_name[4];
+			strncpy(dir_name, hashed_url, 3);
+			dir_name[3] = '\0';
+			///////// set cache directory name with hashed url /////////
+
+			strcat(dir_path, dir_name);
 			/////////// end of making directory name ///////////
 		
 			/* open cache directory for checking cached data */
-			DIR *dp = opendir(cacheDirPath);
+			DIR *dp = opendir(cache_dir_path);
 			struct dirent *pFile;
-	
+
+			/* failed to read cache directory */ 
 			if(dp == NULL){
-				printf("%s\n", cacheDirPath);
+				printf("%s\n", cache_dir_path);
 				printf("Directory read error!!\n");
 				break;
 			}
-			bool judge = false;
-		
-			/////////// start point of making file name ////////////
-			char filePath[30];
-			strcpy(filePath, dirPath);
-			strcat(filePath, "/");
+
+			/////////// start point of making new cache file name ////////////
+			char new_file_path[90]; // failed to refactoring. I don't know what is the problem
+			// occur malloc corruption, when using local function about this part
+			strcpy(new_file_path, dir_path);
+			strcat(new_file_path, "/");
 
 			char tmp[40];
 			for(i = 3; i < strlen(hashed_url); i++){
@@ -366,61 +414,54 @@ int main(){
 			}
 			tmp[i-3] = '\0';
 			
-			strcat(filePath, tmp);		
+			strcat(new_file_path, tmp);
 			/////////// end point of making file name ////////////
 
+			bool is_hit = false; // boolean type variable saving either cached or not
+
 			for(pFile = readdir(dp); pFile; pFile = readdir(dp)){
-				// compare each directory name in cache directory
-				if(strcmp(pFile->d_name, dirName) == 0)
-					judge = true; // found the cache file
+				// compare each directory name in cache directory with newly created directory name
+				if(strcmp(pFile->d_name, dir_name) == 0){
+					// found the cache file => hit
+					is_hit = true; 
+				}
 			}
 
 			// hit
-			if(judge){
-				/*
-				여기서 구현해야할 내용
-				1. cache에 작성된 내용 web browser로 전송
-				2. logfile에 hit message 작성
-				*/
+			if(is_hit){
 				// find and open the cache file.
-				FILE* hitFile = fopen(filePath, "r");
+				FILE* cache_file = fopen(new_file_path, "r");
 
-				// write the whole cache file to the client(web browser)
-				while (feof(hitFile) == 0) {
-					char cacheBuf[BUFSIZE];
+				// send the whole cache file to the client(web browser)
+				while (feof(cache_file) == 0) {
+					char cache_file_buf[BUFSIZE];
 					// read the cache file and write it to the terminal and web browser.
-					fgets(cacheBuf, sizeof(cacheBuf), hitFile);
-					write(STDOUT_FILENO, cacheBuf, sizeof(cacheBuf));
-					write(client_fd, cacheBuf, sizeof(cacheBuf));
+					fgets(cache_file_buf, sizeof(cache_file_buf), cache_file);
+					write(STDOUT_FILENO, cache_file_buf, sizeof(cache_file_buf));
+					write(client_fd, cache_file_buf, sizeof(cache_file_buf));
 				}
 				
-				fprintf(fp,
+				fprintf(logfile_fp,
 					"[HIT]%s-[%d/%02d/%02d, %02d:%02d:%02d]\n",
 					input_url, 1900 + ltp->tm_year, ltp->tm_mon, ltp->tm_mday, ltp->tm_hour, ltp->tm_min, ltp->tm_sec
 				);
-				fprintf(fp,
+				fprintf(logfile_fp,
 					"[HIT]%s\n",
-					filePath);
+					new_file_path);
 				// close the file stream
-				fclose(hitFile);
+				fclose(cache_file);
+				// count the hit num
 				hit_num++;
 			}
 			// miss
 			else{
-				/*
-				여기서 구현해야할 내용
-				1. web server로 request 전송
-				2. web server response를 이용해 cache file 생성
-				3. response를 web browser로 전송
-				4. log file에 miss message를 작성 ㅇ
-				*/
 				// write miss message to logfile
-				fprintf(fp,
+				fprintf(logfile_fp,
 					"[MISS]%s-[%d/%02d/%02d, %02d:%02d:%02d]\n",
 					input_url, 1900 + ltp->tm_year, ltp->tm_mon, ltp->tm_mday, ltp->tm_hour, ltp->tm_min, ltp->tm_sec
 				);
-				// start alarm for 20 seconds
-				alarm(20);
+				// start alarm for 30 seconds
+				alarm(30);
 
 				struct sockaddr_in web_server_addr;
 				int client_socket_fd;
@@ -428,9 +469,9 @@ int main(){
 				// set umask 000
 				umask(000);
 				// make new cache directory
-				mkdir(dirPath, 0777);
+				mkdir(dir_path, 0777);
 				// make cache file in cache directory
-				int file_fd = creat(filePath, 0644);
+				int file_fd = creat(new_file_path, 0644);
 
 				//////////////////// making new socket for connection to server. ////////////
 				if ((client_socket_fd = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
@@ -443,7 +484,7 @@ int main(){
 				web_server_addr.sin_family = AF_INET;
 				web_server_addr.sin_addr.s_addr = inet_addr(IPAddr);
 				web_server_addr.sin_port = htons(80); // HTML's well known port #(80)
-
+				// connect to original server with socket
 				if (connect(client_socket_fd, (struct sockaddr*)&web_server_addr, sizeof(web_server_addr)) < 0) {
 					printf("socket connection fail!\n");
 					return 0;
@@ -454,10 +495,10 @@ int main(){
 				/* start point of sending request message to web server */
 				int read_len; // the length of response message
 				// send request message to web server.
-				if (write(client_socket_fd, buf, strlen(buf)) > 0) {
+				if (write(client_socket_fd, request_body_buf, strlen(request_body_buf)) > 0) {
 					// read response message and save it to 'response_message'.
 					if ((read_len = read(client_socket_fd, response_message, sizeof(response_message))) > 0) {
-						// write response message to cache file and web browser.
+						// write response message to cache file and web browser(client).
 						write(client_fd, response_message, read_len);
 						write(file_fd, response_message, read_len);
 						bzero(response_message, sizeof(response_message));
@@ -470,9 +511,11 @@ int main(){
 				// count the number of misses
 				miss_num++;
 			}
-			/* free hashed url */
-			free(hashed_url);
-			
+			/* free memory allocation */
+			//free(hashed_url);
+			//free(new_file_path);
+			/* free memory allocation */
+
 			printf("[%s : %d] client was disconnected.\n", inet_ntoa(inet_client_address), client_addr.sin_port);
 
 			/* end of the child process */
@@ -481,13 +524,14 @@ int main(){
 		/* close the client socket */
 		close(client_fd);
 		/* close the client socket */
-		subProcessNum++;
-		fprintf(fp, "sub process number count! %d\n", subProcessNum);
+		sub_process_num++;
 	}
 	/* close the socket (connection for web browser) */
 	close(socket_fd);
 	/* close the socket (connection for web browser) */
-	fclose(fp); // close the logfile file stream
 
+	// close the logfile file stream
+	fclose(logfile_fp); 
+	free(home);
 	return 0;
 }
