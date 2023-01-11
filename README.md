@@ -38,10 +38,39 @@ HIT 케이스의 경우(프록시 서버에 caching된 경우) 전송 속도가 
     - logfile에 log를 작성할 때에는 thread를 생성해 logging 작업을 수행하도록 구현한다.
     
 ## 프로젝트 결과
-![image](https://user-images.githubusercontent.com/68600592/211743808-2937ad7b-bb38-442c-939b-67d4088c090c.png)
 
-다음의 URL을 이용해 프록시 서버를 테스트 했습니다.
+다음 커맨드를 이용해 프록시 서버를 실행합니다.
+```c
+cd 3
+make
+./proxy_cache
+```
+
+### 테스트에 사용한 url
 http://transcendentcoolinnerday.neverssl.com/online/
 
-![image](https://user-images.githubusercontent.com/68600592/211744180-970d78f1-d982-488d-a823-4621a85b34ac.png)
+![image](https://user-images.githubusercontent.com/68600592/211749475-27562f1f-2957-4cd3-8e79-cd3bb620bdcc.png)
 
+### 프록시 서버 환경 설정 (firefox 기준)
+![image](https://user-images.githubusercontent.com/68600592/211750849-1244648f-e56d-4071-9bcc-a89f829d8696.png)
+
+
+![image](https://user-images.githubusercontent.com/68600592/211749589-568fd252-cc50-47be-987a-507ec3053dff.png)
+
+
+
+### logfile에 작성되는 log 예시 
+MISS or HIT 여부와 request에 따른 시간 정보가 다음과 같이 작성됩니다.
+```
+[MISS]transcendentcoolinnerday.neverssl.com-[2023/01/10, 23:55:40]
+[HIT]8d7/feb90723fec31bdcf993c21154ccdff4d6e91
+[HIT]transcendentcoolinnerday.neverssl.com-[2023/01/10, 23:55:40]
+[HIT]8d7/feb90723fec31bdcf993c21154ccdff4d6e91
+[HIT]transcendentcoolinnerday.neverssl.com-[2023/01/10, 23:55:45]
+[HIT]8d7/feb90723fec31bdcf993c21154ccdff4d6e91
+[HIT]transcendentcoolinnerday.neverssl.com-[2023/01/10, 23:55:49]
+**SERVER** [Terminated] run time 71 sec. #sub process: 4
+```
+
+### cache, logfile 저장 위치
+![image](https://user-images.githubusercontent.com/68600592/211750005-7efba92b-fb16-4697-9051-101a170c0d43.png)
