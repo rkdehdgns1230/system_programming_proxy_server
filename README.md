@@ -1,8 +1,11 @@
 # System Programming Proxy Server
 C언어와 우분투 시스템 콜을 이용한 프록시 서버 설계 및 구현
 
-## Program Architecture  
+## Program Architecture
+### 전체 구조
 ![image](https://user-images.githubusercontent.com/68600592/211743267-e57668db-3286-4aa0-90ac-3badc1999fb7.png)
+### 도메인 설계
+<img width="797" alt="시프 프록시 서버 다이어그램" src="https://user-images.githubusercontent.com/68600592/211758691-a371d84a-5073-404a-be8f-05b5406ba265.png">
 
 ## 프록시 서버란??
 
